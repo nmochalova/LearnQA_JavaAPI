@@ -8,6 +8,13 @@ public class HelloWorldTest {
         System.out.println("Hello from Natalia");
     }
     @Test
+    public void getTextAPI(){
+        Response response = RestAssured
+                .get("https://playground.learnqa.ru/api/get_text")
+                .andReturn();
+        response.prettyPrint();
+    }
+    @Test
     public void firstTestAPI() {
         Response response = RestAssured
                 .get("https://playground.learnqa.ru/api/hello")

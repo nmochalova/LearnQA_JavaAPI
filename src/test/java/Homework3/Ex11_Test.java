@@ -25,7 +25,7 @@ public class Ex11_Test {
         String cookieName = "HomeWork";
         String expectedValue = "hw_value";
 
-        assertTrue(cookies.containsKey(cookieName));
-        assertEquals(expectedValue,cookies.get(cookieName));
+        assertTrue(cookies.containsKey(cookieName),"Response doesn't have cookie with name " + cookieName);
+        assertEquals(expectedValue,cookies.get(cookieName), "The value of cookie doesn't expected");
     }
 }

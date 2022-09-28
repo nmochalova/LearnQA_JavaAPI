@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserEditTest extends BaseTestCase {
+    //Тест создает пользователя, авторизуется под этим пользователем и меняет параметр firstName на новое.
+    //В конце проверяем, что имя было изменено корректно.
     @Test
     public void testEditJustCreatedTest() {
         //GENERATE USER

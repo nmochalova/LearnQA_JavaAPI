@@ -1,4 +1,4 @@
-package Homework3;
+package Homework2.Homework3;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;

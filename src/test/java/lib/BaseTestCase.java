@@ -26,7 +26,7 @@ public class BaseTestCase {
 
         assertTrue(
                 cookies.containsKey(name),
-                "Response doesn't have cookie with name" + name
+                "Response doesn't have cookie with name " + name
         );
         return cookies.get(name);
     }

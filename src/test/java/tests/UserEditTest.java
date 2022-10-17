@@ -12,53 +12,53 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserEditTest extends BaseTestCase {
-    //Тест создает пользователя, авторизуется под этим пользователем и меняет параметр firstName на новое.
-    //В конце проверяем, что имя было изменено корректно.
-    @Test
-    public void testEditJustCreatedTest() {
-        //GENERATE USER
-        Map<String,String> userData = DataGenerator.getRegisrationData();
+  //Тест создает пользователя, авторизуется под этим пользователем и меняет параметр firstName на новое.
+  //В конце проверяем, что имя было изменено корректно.
+  @Test
+  public void testEditJustCreatedTest() {
+    //GENERATE USER
+    Map<String, String> userData = DataGenerator.getRegisrationData();
 
-        JsonPath responseCreateAuth = RestAssured
-                .given()
-                .body(userData)
-                .post("https://playground.learnqa.ru/api/user/")
-                .jsonPath();
+    JsonPath responseCreateAuth = RestAssured
+            .given()
+            .body(userData)
+            .post("https://playground.learnqa.ru/api/user/")
+            .jsonPath();
 
-        String userId = responseCreateAuth.getString("id");
+    String userId = responseCreateAuth.getString("id");
 
-        //LOGIN
-        Map<String,String> authData = new HashMap<>();
-        authData.put("email", userData.get("email"));
-        authData.put("password", userData.get("password"));
+    //LOGIN
+    Map<String, String> authData = new HashMap<>();
+    authData.put("email", userData.get("email"));
+    authData.put("password", userData.get("password"));
 
-        Response responseGetAuth = RestAssured
-                .given()
-                .body(authData)
-                .post("https://playground.learnqa.ru/api/user/login")
-                .andReturn();
+    Response responseGetAuth = RestAssured
+            .given()
+            .body(authData)
+            .post("https://playground.learnqa.ru/api/user/login")
+            .andReturn();
 
-        //EDIT
-        String newName = "Changed name";
-        Map<String,String> editData = new HashMap<>();
-        editData.put("firstName",newName);
+    //EDIT
+    String newName = "Changed name";
+    Map<String, String> editData = new HashMap<>();
+    editData.put("firstName", newName);
 
-        Response responseEditUser = RestAssured
-                .given()
-                .header("x-csrf-token", this.getHeader(responseGetAuth,"x-csrf-token"))
-                .cookie("auth_sid", this.getCookie(responseGetAuth,"auth_sid"))
-                .body(editData)
-                .put("https://playground.learnqa.ru/api/user/"+userId)
-                .andReturn();
+    Response responseEditUser = RestAssured
+            .given()
+            .header("x-csrf-token", this.getHeader(responseGetAuth, "x-csrf-token"))
+            .cookie("auth_sid", this.getCookie(responseGetAuth, "auth_sid"))
+            .body(editData)
+            .put("https://playground.learnqa.ru/api/user/" + userId)
+            .andReturn();
 
-        //GET
-        Response responseUserData = RestAssured
-                .given()
-                .header("x-csrf-token", this.getHeader(responseGetAuth,"x-csrf-token"))
-                .cookie("auth_sid", this.getCookie(responseGetAuth,"auth_sid"))
-                .get("https://playground.learnqa.ru/api/user/"+userId)
-                .andReturn();
+    //GET
+    Response responseUserData = RestAssured
+            .given()
+            .header("x-csrf-token", this.getHeader(responseGetAuth, "x-csrf-token"))
+            .cookie("auth_sid", this.getCookie(responseGetAuth, "auth_sid"))
+            .get("https://playground.learnqa.ru/api/user/" + userId)
+            .andReturn();
 
-        Assertions.assertJsonByName(responseUserData,"firstName",newName);
-    }
+    Assertions.assertJsonByName(responseUserData, "firstName", newName);
+  }
 }

@@ -1,9 +1,9 @@
 package tests;
 
 import io.restassured.RestAssured;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import lib.ApiCoreRequest;
 import lib.Assertions;
 import lib.BaseTestCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,17 +14,24 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import org.junit.jupiter.api.DisplayName;
 
 /*
 https://playground.learnqa.ru/api/map
 Вкладка Open user API
+
+Для запуска Allure-отчетов во вкладке Terminal: allure serve allure-results/
  */
+@Epic("Authorisation cases")
+@Feature("Authorization")
 public class UserAuthTest extends BaseTestCase {
     String cookie;
     String header;
     int userIdOnAuth;
+    private final ApiCoreRequest apiCoreRequest = new ApiCoreRequest();
 
     @BeforeEach
     public void loginUser() {
@@ -33,11 +40,8 @@ public class UserAuthTest extends BaseTestCase {
         authData.put("password","1234");
 
         //Логинимся (POST-метод /user/login/)
-        Response responseGetAuth = RestAssured
-                .given()
-                .body(authData)
-                .post("https://playground.learnqa.ru/api/user/login")
-                .andReturn();
+        Response responseGetAuth = apiCoreRequest
+                .makePostRequest("https://playground.learnqa.ru/api/user/login",authData);
 
         //Авторизационная куки, с которой сервер свяжет нашего пользователя.
         //Ко всем дальнейшим запросам нужно прикладывать эту куки, чтобы сервер понимал
@@ -54,36 +58,43 @@ public class UserAuthTest extends BaseTestCase {
 
     //Позитивный сценарий авторизации
     @Test
+    @Description("This test successfully authorize user by email and password")
+    @DisplayName("Test positive auth user")
     public void testAuthUser() {
-        //Проверяем, что логирование успешно (GET-метод /user/auth/). Если передаем верные значения,
+        //Проверяем, что логирование успешно. Если передаем верные значения заголовка 'x-csrf-token' и куки 'auth_sid',
         //то вернет id пользователя (т.е. запрос считается авторизованным)
-        //Иначе id = 0 (запрос считается не авторизованным, т.е. переданы неверные заголовок и куки или не переданы вовсе.)
-        Response responseCheckAuth = RestAssured
-                .given()
-                .header("x-csrf-token",this.header)                 //Только в случае правильной передачи
-                .cookie("auth_sid",this.cookie)                     //заголовка 'x-csrf-token' и куки 'auth_sid'
-                .get("https://playground.learnqa.ru/api/user/auth")     //запросы будут считаться авторизованными.
-                .andReturn();
+        //Иначе id = 0
+        Response responseCheckAuth = apiCoreRequest
+                .makeGetRequest("https://playground.learnqa.ru/api/user/auth",
+                        this.header,
+                        this.cookie);
 
         Assertions.assertJsonByName(responseCheckAuth,"user_id",this.userIdOnAuth);
     }
 
-    //Негативные параметризованные тесты: в метод проверки авторизации будем передавать только один из параметров: headers или cookies.
+    //Негативные параметризованные тесты: в метод проверки авторизации будем передавать только один из параметров:
+    // headers или cookies.
+    @Description("This test checks authorization status w/o sending auth cookie or token")
+    @DisplayName("Test negative auth user")
     @ParameterizedTest
     @ValueSource(strings = {"cookie","headers"})
     public void testNegativeAuthUser(String condition) {
-        RequestSpecification spec = RestAssured.given();
-        spec.baseUri("https://playground.learnqa.ru/api/user/auth");  //объявляем куда будем слать запрос
-
-        if(condition.equals("cookie")) {                            //добавляет только одну часть к запросу в зависимости от параметров теста
-            spec.cookie("auth_sid",this.cookie);
+        //добавляет только одну часть к запросу в зависимости от параметров теста
+        if(condition.equals("cookie")) {
+            Response responseForCheck = apiCoreRequest.makeGetRequestWithCookie(
+                    "https://playground.learnqa.ru/api/user/auth",
+                    this.cookie
+            );
+            //Убеждаем что в ответе 0, т.е. ошибка авторизации
+            Assertions.assertJsonByName(responseForCheck,"user_id",0);
         } else if (condition.equals("headers")) {
-            spec.header("x-csrf-token", this.header);
+            Response responseForCheck = apiCoreRequest.makeGetRequestWithToken(
+                    "https://playground.learnqa.ru/api/user/auth",
+                    this.header
+            );
+            Assertions.assertJsonByName(responseForCheck,"user_id",0);
         } else {
             throw new IllegalArgumentException("Condition values is know: " + condition);
         }
-
-        Response responseForCheck = spec.get().andReturn();                           //делаем get-запрос
-        Assertions.assertJsonByName(responseForCheck,"user_id",0);  //Убеждаем что в ответе 0, т.е. ошибка авторизации
     }
 }

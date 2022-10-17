@@ -6,6 +6,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /*
@@ -26,6 +28,8 @@ public class Ex10_Test {
                     .jsonPath();
 
             String answer = response.getString("answer");
-            assertTrue(answer.length() > 15,"The length of the text response is less than 15 characters");
+
+            assertEquals(answer.length(),("Hello, " + name).length(),"The text of response is not equals name");
+            //assertTrue(answer.length() > 15,"The length of the text response is less than 15 characters");
     }
 }

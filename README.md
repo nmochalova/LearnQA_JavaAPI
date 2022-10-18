@@ -63,19 +63,20 @@ docker run --rm --mount type=bind,src=$(pwd),target=/tests/ java_api_tests
 version: "3"
 
 services:
-test_runner:
-build: .
-image: java_api_tests
-container_name: java_runner_works
-volumes:
-- .:/tests/
+  test_runner:
+    build: .
+    image: java_api_tests
+    container_name: java_runner_works
+    volumes:
+      - .:/tests/
 ````
+>**Внимание!** для файлов yml пробелы и отступы критичны, поэтому желательно взять точное содержимое файла из проекта
+
 где
 - build: . - создаем образ docker-файла в той же директории
 - image: java_api_tests - название образа
 - container_name: java_runner_works -  название контейнера
-volumes:
-- .:/tests/ - дублируем переменную окружения: откуда внутри конейнера брать тесты и куда потом класть внутри контейнера, т.е. из брать текущей директории (.) и класть в /tests/
+- volumes: - .:/tests/ - дублируем переменную окружения: откуда внутри конейнера брать тесты и куда потом класть внутри контейнера, т.е. из брать текущей директории (.) и класть в /tests/
 
 6. Запускаем
 

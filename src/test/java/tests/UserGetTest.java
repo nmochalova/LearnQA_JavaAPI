@@ -4,7 +4,6 @@ import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lib.ApiCoreRequest;
 import lib.Assertions;
@@ -63,5 +62,39 @@ public class UserGetTest extends BaseTestCase {
         //Проверяем, что json ответа содержит поля
         String[] expectedFields = {"username","firstName","lastName","email"};
         Assertions.assertJsonHasFields(responseUserData,expectedFields);
+    }
+
+    //тест, который авторизовывается одним пользователем, но получает данные другого (т.е. с другим ID)
+    @Test
+    @Story("This test authorization one user but get details another user")
+    @Description("This test authorization one user but get details another user")
+    @DisplayName("Negative: get details not authorization user")
+    public void testGetUserDetailsAuthAsOtherUser() {
+        Map<String, String> authData = new HashMap<>();
+        authData.put("email","vinkotov@example.com");
+        authData.put("password","1234");
+
+        //авторизация для существующего пользователя
+        Response responseGetAuth = apiCoreRequest.makePostRequest(
+                "https://playground.learnqa.ru/api/user/login",
+                authData);
+
+        //Для авторизованного пользователя получаем заголовок и куки
+        String header = this.getHeader(responseGetAuth,"x-csrf-token");
+        String cookie = this.getCookie(responseGetAuth,"auth_sid");
+        int id = this.getIntFromJson(responseGetAuth,"user_id");
+        String url = "https://playground.learnqa.ru/api/user/"+ (id-1);
+
+        //запрашиваем данные по другому пользователю, не авторизованному
+        Response responseUserData = apiCoreRequest.makeGetRequest(
+                url,
+                header,
+                cookie);
+
+        //Проверяем, что json ответа содержит только поле username
+        Assertions.assertJsonHasField(responseUserData,"username");           //поле есть
+        Assertions.assertJsonHasNotField(responseUserData,"firstName");     //поля нет
+        Assertions.assertJsonHasNotField(responseUserData,"lastName");      //поля нет
+        Assertions.assertJsonHasNotField(responseUserData,"email");         //поля нет
     }
 }

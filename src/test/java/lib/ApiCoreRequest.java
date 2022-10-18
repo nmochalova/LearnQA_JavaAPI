@@ -15,6 +15,7 @@ public class ApiCoreRequest {
   public Response makeGetRequest(String url, String token, String cookie) {
     return given()
             .filter(new AllureRestAssured())
+            .log().all()
             .header(new Header("x-csrf-token",token))
             .cookie("auth_sid",cookie)
             .get(url)

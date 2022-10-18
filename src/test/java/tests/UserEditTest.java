@@ -5,6 +5,7 @@ import io.qameta.allure.Feature;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import lib.ApiCoreRequest;
 import lib.Assertions;
 import lib.BaseTestCase;
 import lib.DataGenerator;
@@ -16,6 +17,10 @@ import java.util.Map;
 @Epic("User cases")
 @Feature("Edit user")
 public class UserEditTest extends BaseTestCase {
+  private final ApiCoreRequest apiCoreRequest = new ApiCoreRequest();
+  private final String BASE_URL = "https://playground.learnqa.ru/api/user/";
+  private final String URL_LOGIN = "https://playground.learnqa.ru/api/user/login";
+
   //Тест создает пользователя, авторизуется под этим пользователем и меняет параметр firstName на новое.
   //В конце проверяем, что имя было изменено корректно.
   @Test
@@ -23,11 +28,9 @@ public class UserEditTest extends BaseTestCase {
     //GENERATE USER
     Map<String, String> userData = DataGenerator.getRegisrationData();
 
-    JsonPath responseCreateAuth = RestAssured
-            .given()
-            .body(userData)
-            .post("https://playground.learnqa.ru/api/user/")
-            .jsonPath();
+    JsonPath responseCreateAuth = apiCoreRequest
+                   .makePostRequest(BASE_URL,userData)
+                   .jsonPath();
 
     String userId = responseCreateAuth.getString("id");
 
@@ -36,32 +39,23 @@ public class UserEditTest extends BaseTestCase {
     authData.put("email", userData.get("email"));
     authData.put("password", userData.get("password"));
 
-    Response responseGetAuth = RestAssured
-            .given()
-            .body(authData)
-            .post("https://playground.learnqa.ru/api/user/login")
-            .andReturn();
+    Response responseGetAuth = apiCoreRequest.makePostRequest(
+            URL_LOGIN,
+            authData);
 
     //EDIT
     String newName = "Changed name";
     Map<String, String> editData = new HashMap<>();
     editData.put("firstName", newName);
 
-    Response responseEditUser = RestAssured
-            .given()
-            .header("x-csrf-token", this.getHeader(responseGetAuth, "x-csrf-token"))
-            .cookie("auth_sid", this.getCookie(responseGetAuth, "auth_sid"))
-            .body(editData)
-            .put("https://playground.learnqa.ru/api/user/" + userId)
-            .andReturn();
+    String url = BASE_URL + userId;
+    String token = this.getHeader(responseGetAuth, "x-csrf-token");
+    String cookie = this.getCookie(responseGetAuth, "auth_sid");
+
+    Response responseEditUser = apiCoreRequest.makePutRequest(url,token,cookie,editData);
 
     //GET
-    Response responseUserData = RestAssured
-            .given()
-            .header("x-csrf-token", this.getHeader(responseGetAuth, "x-csrf-token"))
-            .cookie("auth_sid", this.getCookie(responseGetAuth, "auth_sid"))
-            .get("https://playground.learnqa.ru/api/user/" + userId)
-            .andReturn();
+    Response responseUserData = apiCoreRequest.makeGetRequest(url,token,cookie);
 
     Assertions.assertJsonByName(responseUserData, "firstName", newName);
   }

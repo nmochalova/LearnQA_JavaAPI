@@ -2,7 +2,6 @@ package lib;
 
 import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
-import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
 
@@ -52,8 +51,20 @@ public class ApiCoreRequest {
 
   @Step("Make GET-request without parameters")
   public Response makeGetRequest(String url) {
-    return RestAssured
+    return  given()
+            .filter(new AllureRestAssured())
             .get(url)
+            .andReturn();
+  }
+
+  @Step("Make a PUT-request")
+  public Response makePutRequest(String url, String token, String cookie, Map<String,String> editData) {
+    return  given()
+            .filter(new AllureRestAssured())
+            .header(new Header("x-csrf-token",token))
+            .cookie("auth_sid", cookie)
+            .body(editData)
+            .put(url)
             .andReturn();
   }
 }

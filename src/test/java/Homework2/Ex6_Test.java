@@ -1,9 +1,10 @@
 package Homework2;
 
+import io.qameta.allure.Epic;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
-
+@Epic("Homework")
 public class Ex6_Test {
     /***
      * Ex6:* Редирект

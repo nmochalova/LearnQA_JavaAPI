@@ -1,5 +1,6 @@
 package Homework2.Homework3;
 
+import io.qameta.allure.Epic;
 import io.restassured.RestAssured;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 Этот метод возвращает headers с каким-то значением. Необходимо понять что за headers и с каким значением,
 и зафиксировать это поведение с помощью assert
  */
+@Epic("Homework")
 public class Ex12_Test {
     @Test
     public void testCookies() {

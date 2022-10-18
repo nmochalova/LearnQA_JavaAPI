@@ -1,9 +1,10 @@
 package Homework2;
 
+import io.qameta.allure.Epic;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.Test;
-
+@Epic("Homework")
 public class Ex5_Test {
     /***
      * Ex5: Парсинг JSON

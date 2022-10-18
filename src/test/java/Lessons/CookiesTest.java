@@ -1,5 +1,6 @@
 package Lessons;
 
+import io.qameta.allure.Epic;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,8 @@ import java.util.Map;
  * 1) авторизация (узнает ранее авторизованного пользователя)
  * 2) доп.информация о пользователе (например, действия пользователя)
  */
+
+@Epic("Lessons")
 public class CookiesTest {
     //Получение cookie
     @Test

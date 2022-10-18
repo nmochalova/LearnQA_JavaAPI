@@ -1,8 +1,7 @@
 package tests;
 
-import io.restassured.RestAssured;
+import io.qameta.allure.Story;
 import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import lib.ApiCoreRequest;
 import lib.Assertions;
 import lib.BaseTestCase;
@@ -25,7 +24,7 @@ https://playground.learnqa.ru/api/map
 
 Для запуска Allure-отчетов во вкладке Terminal: allure serve allure-results/
  */
-@Epic("Authorisation cases")
+@Epic("User cases")
 @Feature("Authorization")
 public class UserAuthTest extends BaseTestCase {
     String cookie;
@@ -58,6 +57,7 @@ public class UserAuthTest extends BaseTestCase {
 
     //Позитивный сценарий авторизации
     @Test
+    @Story("This test successfully authorize user by email and password")
     @Description("This test successfully authorize user by email and password")
     @DisplayName("Test positive auth user")
     public void testAuthUser() {
@@ -74,6 +74,7 @@ public class UserAuthTest extends BaseTestCase {
 
     //Негативные параметризованные тесты: в метод проверки авторизации будем передавать только один из параметров:
     // headers или cookies.
+    @Story("Test checks authorization status")
     @Description("This test checks authorization status w/o sending auth cookie or token")
     @DisplayName("Test negative auth user")
     @ParameterizedTest

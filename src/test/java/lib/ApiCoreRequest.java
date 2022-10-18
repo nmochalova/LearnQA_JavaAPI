@@ -2,6 +2,7 @@ package lib;
 
 import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.RestAssured;
 import io.restassured.http.Header;
 import io.restassured.response.Response;
 
@@ -45,6 +46,13 @@ public class ApiCoreRequest {
             .log().all()
             .body(authData)
             .post(url)
+            .andReturn();
+  }
+
+  @Step("Make GET-request without parameters")
+  public Response makeGetRequest(String url) {
+    return RestAssured
+            .get(url)
             .andReturn();
   }
 }

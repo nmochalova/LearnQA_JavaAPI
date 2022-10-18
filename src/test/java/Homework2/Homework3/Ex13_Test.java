@@ -1,5 +1,6 @@
 package Homework2.Homework3;
 
+import io.qameta.allure.Epic;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 Ответом к задаче должен быть список из тех User Agent, которые вернули неправильным хотя бы один параметр,
 с указанием того, какой именно параметр неправильный.
  */
+@Epic("Homework")
 public class Ex13_Test {
     @ParameterizedTest
     @MethodSource("getUserAgent")

@@ -1,5 +1,6 @@
 package Lessons;
 
+import io.qameta.allure.Epic;
 import io.restassured.RestAssured;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
@@ -10,6 +11,8 @@ import java.util.Map;
 
 //Заголовки http-запроса - это служебная иформация. Есть как у запроса, так и у ответа
 //F12 - Network - Headers
+
+@Epic("Lessons")
 public class HeadersTest {
     //show_all_headers - метод, который возвращает заголовки запроса или ответа
     @Test

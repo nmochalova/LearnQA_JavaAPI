@@ -1,5 +1,7 @@
 package tests;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -11,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+@Epic("User cases")
+@Feature("Edit user")
 public class UserEditTest extends BaseTestCase {
   //Тест создает пользователя, авторизуется под этим пользователем и меняет параметр firstName на новое.
   //В конце проверяем, что имя было изменено корректно.

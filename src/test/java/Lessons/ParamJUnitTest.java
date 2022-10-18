@@ -1,5 +1,6 @@
 package Lessons;
 
+import io.qameta.allure.Epic;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -12,6 +13,8 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
+@Epic("Lessons")
 public class ParamJUnitTest {
     @Test
     public void testRestAssured() {

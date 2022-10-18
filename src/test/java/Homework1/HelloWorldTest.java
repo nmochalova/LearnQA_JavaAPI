@@ -1,9 +1,11 @@
 package Homework1;
 
+import io.qameta.allure.Epic;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
+@Epic("Homework")
 public class HelloWorldTest {
     @Test
     public void helloFrom() {

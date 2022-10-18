@@ -1,5 +1,6 @@
 package Homework2.Homework3;
 
+import io.qameta.allure.Epic;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 Этот метод возвращает какую-то cookie с каким-то значением.
 Необходимо понять что за cookie и с каким значением, и зафиксировать это поведение с помощью assert.
  */
+@Epic("Homework")
 public class Ex11_Test {
     @Test
     public void testCookies() {

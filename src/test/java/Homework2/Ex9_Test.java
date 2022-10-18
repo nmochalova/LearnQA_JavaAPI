@@ -1,5 +1,6 @@
 package Homework2;
 
+import io.qameta.allure.Epic;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
@@ -22,6 +23,7 @@ import java.util.Map;
 
  Ответом к задаче должен быть верный пароль
  */
+@Epic("Homework")
 public class Ex9_Test {
     @Test
     public void AuthTest() {

@@ -1,9 +1,11 @@
 package Lessons;
 
+import io.qameta.allure.Epic;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
+@Epic("Lessons")
 public class CodeResponsTest {
     //Коды запросов
     @Test

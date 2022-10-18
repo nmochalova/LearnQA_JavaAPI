@@ -1,5 +1,6 @@
 package lib;
 
+import io.qameta.allure.Step;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
 
@@ -9,6 +10,7 @@ import static org.hamcrest.Matchers.hasKey;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BaseTestCase {
+    @Step("Return header of response")
     //Проверяем, что в указанный заголовок пришло значение и возвращаем его
     protected String getHeader(Response response, String name) {
         Headers headers = response.getHeaders();
@@ -20,6 +22,7 @@ public class BaseTestCase {
         return headers.getValue(name);
     }
 
+    @Step("Return cookie of response")
     //Проверяем, что в указанную куку пришло значение и возвращаем его
     protected String getCookie(Response response, String name) {
         Map<String,String> cookies = response.getCookies();
@@ -31,7 +34,8 @@ public class BaseTestCase {
         return cookies.get(name);
     }
 
-    //Метод, который проверяет наличие поля namr и возвращает его значение
+    @Step("Return int value of field")
+    //Метод, который проверяет наличие поля name и возвращает его значение
     protected int getIntFromJson(Response response, String name) {
         response
                 .then()

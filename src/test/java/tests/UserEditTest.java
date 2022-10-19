@@ -48,12 +48,13 @@ public class UserEditTest extends BaseTestCase {
     String firstUserId = firstUser.get("userId");
     String token = firstUser.get("token");
     String cookie = firstUser.get("cookie");
+    String userId = firstUser.get("userId");
 
     //GET SECOND USER BEFORE EDIT
     String changeField = "username";
     int secondIdUser = Integer.parseInt(firstUserId)-1;
-    Response responseUserDataBeforeEdit = apiCoreRequest.makeGetRequest(BASE_URL + secondIdUser,token,cookie);
-    String nameAfter = this.getStringFromJson(responseUserDataBeforeEdit,changeField);
+    Response responseSecondUserDataBeforeEdit = apiCoreRequest.makeGetRequest(BASE_URL + secondIdUser,token,cookie);
+    String nameSecondUserBefore = this.getStringFromJson(responseSecondUserDataBeforeEdit,changeField);
 
     //EDIT SECOND USER
     String newName = "Changed name";
@@ -62,10 +63,17 @@ public class UserEditTest extends BaseTestCase {
     apiCoreRequest.makePutRequest(BASE_URL + secondIdUser,token,cookie,editData);
 
     //GET SECOND USER AFTER EDIT
-    Response responseUserDataAfterEdit = apiCoreRequest.makeGetRequest(BASE_URL + secondIdUser,token,cookie);
-    String nameBefore = this.getStringFromJson(responseUserDataAfterEdit,changeField);
+    Response responseSecondUserDataAfterEdit = apiCoreRequest.makeGetRequest(BASE_URL + secondIdUser,token,cookie);
+    String nameSecondUserAfter = this.getStringFromJson(responseSecondUserDataAfterEdit,changeField);
 
-    assertEquals(nameAfter,nameBefore);
+    assertEquals(nameSecondUserBefore,nameSecondUserAfter,"The name before and after should not have changed");
+
+    //GET FIRST USER AFTER EDIT
+    Response responseFirstUserDataAfterEdit = apiCoreRequest.makeGetRequest(BASE_URL + userId,token,cookie);
+    String nameFirstUserAfter = this.getStringFromJson(responseFirstUserDataAfterEdit,changeField);
+
+    String nameFirstUserBefore = firstUser.get(changeField);
+    assertEquals(nameFirstUserBefore,nameFirstUserAfter,"The name before and after should not have changed");
   }
 
   //Попытаемся изменить email пользователя, будучи авторизованными тем же пользователем, на новый email без символа @

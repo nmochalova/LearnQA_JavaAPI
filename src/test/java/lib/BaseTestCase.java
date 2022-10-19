@@ -69,6 +69,7 @@ public class BaseTestCase {
         JsonPath responseCreateAuth = apiCoreRequest
                 .makePostRequest(BASE_URL,userData)
                 .jsonPath();
+        responseCreateAuth.prettyPrint();
 
         String userId = responseCreateAuth.getString("id");
         userData.put("userId",userId);
@@ -77,7 +78,10 @@ public class BaseTestCase {
         Map<String, String> authData = new HashMap<>();
         authData.put("email", userData.get("email"));
         authData.put("password", userData.get("password"));
+
         Response responseGetAuth = apiCoreRequest.makePostRequest(URL_LOGIN, authData);
+        responseGetAuth.prettyPrint();
+
         String token = this.getHeader(responseGetAuth, "x-csrf-token");
         String cookie = this.getCookie(responseGetAuth, "auth_sid");
 
@@ -85,5 +89,34 @@ public class BaseTestCase {
         userData.put("cookie",cookie);
 
         return userData;
+    }
+
+    protected Map<String,String> authTestUser() {
+        Map<String,String> authData = new HashMap<>();
+        authData.put("email","vinkotov@example.com");
+        authData.put("password","1234");
+
+        //Логинимся (POST-метод /user/login/)
+        Response responseGetAuth = apiCoreRequest
+                .makePostRequest(URL_LOGIN,authData);
+
+        //Авторизационная куки, с которой сервер свяжет нашего пользователя.
+        //Ко всем дальнейшим запросам нужно прикладывать эту куки, чтобы сервер понимал
+        //что запросы идут от нашего пользователя и являются авторизованными.
+        String cookie = getCookie(responseGetAuth,"auth_sid");
+        authData.put("cookie",cookie);
+
+        //Заголовок, который играет ключевую роль в безопасности пользователя
+        //и не позволяет подделывать запросы от имени пользователя злоумышленникам.
+        String token = getHeader(responseGetAuth,"x-csrf-token");
+        authData.put("token",token);
+
+        //id пользователя, под которым мы авторизовались
+        String userId = getStringFromJson(responseGetAuth,"user_id");
+        authData.put("userId",userId);
+
+        Assertions.assertJsonByName(responseGetAuth,"user_id",2);
+
+        return authData;
     }
 }

@@ -10,6 +10,17 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 
 public class ApiCoreRequest {
+  @Step("Make a DELETE-request with token and auth cookie")
+  public Response makeDeleteRequest(String url, String token, String cookie) {
+    return given()
+            .filter(new AllureRestAssured())
+            .log().all()
+            .header(new Header("x-csrf-token",token))
+            .cookie("auth_sid",cookie)
+            .delete(url)
+            .andReturn();
+  }
+
   @Step("Make a GET-request with token and auth cookie")
   public Response makeGetRequest(String url, String token, String cookie) {
     return given()

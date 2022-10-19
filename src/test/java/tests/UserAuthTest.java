@@ -8,8 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.HashMap;
 import java.util.Map;
 
 import io.qameta.allure.Description;
@@ -32,25 +30,10 @@ public class UserAuthTest extends BaseTestCase {
 
     @BeforeEach
     public void loginUser() {
-        Map<String,String> authData = new HashMap<>();
-        authData.put("email","vinkotov@example.com");
-        authData.put("password","1234");
-
-        //Логинимся (POST-метод /user/login/)
-        Response responseGetAuth = apiCoreRequest
-                .makePostRequest(URL_LOGIN,authData);
-
-        //Авторизационная куки, с которой сервер свяжет нашего пользователя.
-        //Ко всем дальнейшим запросам нужно прикладывать эту куки, чтобы сервер понимал
-        //что запросы идут от нашего пользователя и являются авторизованными.
-        this.cookie = this.getCookie(responseGetAuth,"auth_sid");
-
-        //Заголовок, который играет ключевую роль в безопасности пользователя
-        //и не позволяет подделывать запросы от имени пользователя злоумышленникам.
-        this.header = this.getHeader(responseGetAuth,"x-csrf-token");
-
-        //id пользователя, под которым мы авторизовались
-        this.userIdOnAuth = this.getIntFromJson(responseGetAuth,"user_id");
+        Map<String,String> authData = authTestUser();
+        cookie = authData.get("cookie");
+        header = authData.get("token");
+        userIdOnAuth = Integer.parseInt(authData.get("userId"));
     }
 
     //Позитивный сценарий авторизации

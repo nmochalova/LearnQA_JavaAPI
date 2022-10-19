@@ -2,7 +2,6 @@ package tests;
 
 import io.qameta.allure.*;
 import io.restassured.response.Response;
-import lib.ApiCoreRequest;
 import lib.Assertions;
 import lib.BaseTestCase;
 import lib.DataGenerator;
@@ -17,8 +16,6 @@ import java.util.Map;
 @Epic("User cases")
 @Feature("Create user")
 public class UserRegisterTest extends BaseTestCase {
-    private final ApiCoreRequest apiCoreRequest = new ApiCoreRequest();
-
     @Test
     @Story("This test create user with incorrect email")
     @Description("This test create user with incorrect email")
@@ -30,7 +27,7 @@ public class UserRegisterTest extends BaseTestCase {
         userData = DataGenerator.getRegisrationData(userData);
 
         Response responseCreateAuth = apiCoreRequest.makePostRequest(
-                "https://playground.learnqa.ru/api/user/",
+                BASE_URL,
                 userData);
 
         Assertions.assertResponseCodeEquals(responseCreateAuth,400);
@@ -46,7 +43,7 @@ public class UserRegisterTest extends BaseTestCase {
         Map<String,String> userData = DataGenerator.getRegisrationData(parameter); //Создание пользователя без указания одного из полей
 
         Response responseCreateAuth = apiCoreRequest.makePostRequest(
-                "https://playground.learnqa.ru/api/user/",
+                BASE_URL,
                 userData);
 
         Assertions.assertResponseCodeEquals(responseCreateAuth,400);
@@ -65,7 +62,7 @@ public class UserRegisterTest extends BaseTestCase {
         userData = DataGenerator.getRegisrationData(userData);
 
         Response responseCreateAuth = apiCoreRequest.makePostRequest(
-                "https://playground.learnqa.ru/api/user/",
+                BASE_URL,
                 userData);
 
         Assertions.assertResponseCodeEquals(responseCreateAuth,400);
@@ -87,7 +84,7 @@ public class UserRegisterTest extends BaseTestCase {
         userData = DataGenerator.getRegisrationData(userData);
 
         Response responseCreateAuth = apiCoreRequest.makePostRequest(
-                "https://playground.learnqa.ru/api/user/",
+                BASE_URL,
                 userData);
 
         Assertions.assertResponseCodeEquals(responseCreateAuth,400);
@@ -105,7 +102,7 @@ public class UserRegisterTest extends BaseTestCase {
         userData = DataGenerator.getRegisrationData(userData);
 
         Response responseCreateAuth = apiCoreRequest.makePostRequest(
-                "https://playground.learnqa.ru/api/user/",
+                BASE_URL,
                 userData);
 
         Assertions.assertResponseCodeEquals(responseCreateAuth,400);
@@ -120,7 +117,7 @@ public class UserRegisterTest extends BaseTestCase {
         Map<String,String> userData = DataGenerator.getRegisrationData(); //данные с рандомным email
 
         Response responseCreateAuth = apiCoreRequest.makePostRequest(
-                "https://playground.learnqa.ru/api/user/",
+                BASE_URL,
                 userData);
 
         Assertions.assertResponseCodeEquals(responseCreateAuth,200);

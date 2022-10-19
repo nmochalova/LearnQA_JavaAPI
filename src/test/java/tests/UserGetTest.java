@@ -5,7 +5,6 @@ import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
 import io.restassured.response.Response;
-import lib.ApiCoreRequest;
 import lib.Assertions;
 import lib.BaseTestCase;
 import org.junit.jupiter.api.DisplayName;
@@ -18,15 +17,13 @@ import java.util.Map;
 @Feature("Get user")
 public class UserGetTest extends BaseTestCase {
 
-    private final ApiCoreRequest apiCoreRequest = new ApiCoreRequest();
-
     //просмотр данных для неавторизованного пользователя
     @Test
     @Story("This test get request by not authorization user")
     @Description("This test get request by not authorization user")
     @DisplayName("Negative: user is not authorization")
     public void testGetUserDataNotAuth() {
-        Response responseUserData = apiCoreRequest.makeGetRequest("https://playground.learnqa.ru/api/user/2");
+        Response responseUserData = apiCoreRequest.makeGetRequest(BASE_URL + TEST_USER_ID);
 
         Assertions.assertJsonHasField(responseUserData,"username");           //поле есть
         Assertions.assertJsonHasNotField(responseUserData,"firstName");     //поля нет
@@ -46,7 +43,7 @@ public class UserGetTest extends BaseTestCase {
 
         //авторизация для существующего пользователя
         Response responseGetAuth = apiCoreRequest.makePostRequest(
-                "https://playground.learnqa.ru/api/user/login",
+                URL_LOGIN,
                 authData);
 
         //Для авторизованного пользователя получаем заголовок и куки
@@ -55,7 +52,7 @@ public class UserGetTest extends BaseTestCase {
 
         //запрашиваем данные по авторизованному пользователю
         Response responseUserData = apiCoreRequest.makeGetRequest(
-                "https://playground.learnqa.ru/api/user/2",
+                BASE_URL + TEST_USER_ID,
                 header,
                 cookie);
 
@@ -76,14 +73,14 @@ public class UserGetTest extends BaseTestCase {
 
         //авторизация для существующего пользователя
         Response responseGetAuth = apiCoreRequest.makePostRequest(
-                "https://playground.learnqa.ru/api/user/login",
+                URL_LOGIN,
                 authData);
 
         //Для авторизованного пользователя получаем заголовок и куки
         String header = this.getHeader(responseGetAuth,"x-csrf-token");
         String cookie = this.getCookie(responseGetAuth,"auth_sid");
         int id = this.getIntFromJson(responseGetAuth,"user_id");
-        String url = "https://playground.learnqa.ru/api/user/"+ (id-1);
+        String url = BASE_URL + (id-1);
 
         //запрашиваем данные по другому пользователю, не авторизованному
         Response responseUserData = apiCoreRequest.makeGetRequest(

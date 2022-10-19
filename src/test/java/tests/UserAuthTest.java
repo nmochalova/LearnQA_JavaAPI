@@ -2,7 +2,6 @@ package tests;
 
 import io.qameta.allure.Story;
 import io.restassured.response.Response;
-import lib.ApiCoreRequest;
 import lib.Assertions;
 import lib.BaseTestCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +29,6 @@ public class UserAuthTest extends BaseTestCase {
     String cookie;
     String header;
     int userIdOnAuth;
-    private final ApiCoreRequest apiCoreRequest = new ApiCoreRequest();
 
     @BeforeEach
     public void loginUser() {
@@ -40,7 +38,7 @@ public class UserAuthTest extends BaseTestCase {
 
         //Логинимся (POST-метод /user/login/)
         Response responseGetAuth = apiCoreRequest
-                .makePostRequest("https://playground.learnqa.ru/api/user/login",authData);
+                .makePostRequest(URL_LOGIN,authData);
 
         //Авторизационная куки, с которой сервер свяжет нашего пользователя.
         //Ко всем дальнейшим запросам нужно прикладывать эту куки, чтобы сервер понимал
@@ -65,7 +63,7 @@ public class UserAuthTest extends BaseTestCase {
         //то вернет id пользователя (т.е. запрос считается авторизованным)
         //Иначе id = 0
         Response responseCheckAuth = apiCoreRequest
-                .makeGetRequest("https://playground.learnqa.ru/api/user/auth",
+                .makeGetRequest(URL_AUTH,
                         this.header,
                         this.cookie);
 
@@ -83,14 +81,14 @@ public class UserAuthTest extends BaseTestCase {
         //добавляет только одну часть к запросу в зависимости от параметров теста
         if(condition.equals("cookie")) {
             Response responseForCheck = apiCoreRequest.makeGetRequestWithCookie(
-                    "https://playground.learnqa.ru/api/user/auth",
+                    URL_AUTH,
                     this.cookie
             );
             //Убеждаем что в ответе 0, т.е. ошибка авторизации
             Assertions.assertJsonByName(responseForCheck,"user_id",0);
         } else if (condition.equals("headers")) {
             Response responseForCheck = apiCoreRequest.makeGetRequestWithToken(
-                    "https://playground.learnqa.ru/api/user/auth",
+                    URL_AUTH,
                     this.header
             );
             Assertions.assertJsonByName(responseForCheck,"user_id",0);

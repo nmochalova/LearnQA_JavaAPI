@@ -4,12 +4,9 @@ import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import lib.ApiCoreRequest;
 import lib.Assertions;
 import lib.BaseTestCase;
-import lib.DataGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,10 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Epic("User cases")
 @Feature("Edit user")
 public class UserEditTest extends BaseTestCase {
-  private final ApiCoreRequest apiCoreRequest = new ApiCoreRequest();
-  private final String BASE_URL = "https://playground.learnqa.ru/api/user/";
-  private final String URL_LOGIN = "https://playground.learnqa.ru/api/user/login";
-
   // Попытаемся изменить данные пользователя, будучи неавторизованными
   @Test
   @Story("This test change the data of an unauthorized user")
@@ -161,27 +154,4 @@ public class UserEditTest extends BaseTestCase {
     Assertions.assertJsonByName(responseUserData, "firstName", newName);
   }
 
-  private Map<String,String> createUserAndLoginUser() {
-    //GENERATE USER
-    Map<String, String> userData = DataGenerator.getRegisrationData();
-    JsonPath responseCreateAuth = apiCoreRequest
-            .makePostRequest(BASE_URL,userData)
-            .jsonPath();
-
-    String userId = responseCreateAuth.getString("id");
-    userData.put("userId",userId);
-
-    //LOGIN USER
-    Map<String, String> authData = new HashMap<>();
-    authData.put("email", userData.get("email"));
-    authData.put("password", userData.get("password"));
-    Response responseGetAuth = apiCoreRequest.makePostRequest(URL_LOGIN, authData);
-    String token = this.getHeader(responseGetAuth, "x-csrf-token");
-    String cookie = this.getCookie(responseGetAuth, "auth_sid");
-
-    userData.put("token",token);
-    userData.put("cookie",cookie);
-
-    return userData;
-  }
 }

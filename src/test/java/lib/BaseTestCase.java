@@ -44,4 +44,15 @@ public class BaseTestCase {
         );
         return response.jsonPath().getInt(name);
     }
+
+    @Step("Return string value of field")
+    //Метод, который проверяет наличие поля name и возвращает его значение
+    protected String getStringFromJson(Response response, String name) {
+        response
+                .then()
+                .assertThat()
+                .body("$",hasKey(name) //$ - ищем поле в корне json
+                );
+        return response.jsonPath().getString(name);
+    }
 }
